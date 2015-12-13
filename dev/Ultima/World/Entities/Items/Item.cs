@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public int ItemID
         {
-            get { return m_ItemID; }
+            get { return m_ItemID & 0x0000FFFF; }
             set
             {
 				m_ItemID = value;

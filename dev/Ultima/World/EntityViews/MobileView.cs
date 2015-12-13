@@ -118,8 +118,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
             DrawFlip = (MirrorFacingForDraw(Facing) > 4) ? true : false;
 
             InternalSetupLayers();
-
-            int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
+            int drawCenterY = 0;
+            if (m_MobileLayers[0].Frame != null)
+            {
+                drawCenterY = m_MobileLayers[0].Frame.Center.Y;
+            }
+            else
+            {
+                drawCenterY = -(drawCenterY + IsometricRenderer.TILE_SIZE_INTEGER);
+            }
+            
 
             int drawX, drawY;
             if (DrawFlip)

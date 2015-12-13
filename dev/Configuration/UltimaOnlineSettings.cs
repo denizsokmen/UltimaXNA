@@ -29,7 +29,7 @@ namespace UltimaXNA.Configuration
             // We are focusing our efforts on getting a specific version of the client working.
             // Once we have this version working, we will attempt to support additional versions.
             // We will not support any issues you experience after changing this value.
-            ClientVersion = new byte[] {6, 0, 6, 2};
+            ClientVersion = new byte[] {7, 0, 18, 0};
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace UltimaXNA.Configuration
                 if (value == null || value.Length != 4)
                     return;
                 // Do not remove this check. See above.
-                if (value[0] != 6 || value[1] != 0 || value[2] != 6 || value[3] != 2)
+                if (value[0] != 7 || value[1] != 0 || value[2] != 18 || value[3] != 0)
                     return;
                 SetProperty(ref m_ClientVersion, value);
             }

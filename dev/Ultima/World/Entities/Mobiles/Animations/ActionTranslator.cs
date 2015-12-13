@@ -155,7 +155,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                         else
                             return (int)ActionIndexHumanoid.Emote_Eat;
                     default:
-                        return (int)-1;
+                        return (int)ActionIndexHumanoid.Walk;
                 }
             }
             else if (body.IsAnimal)
@@ -178,7 +178,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                     case MobileAction.MonsterAction:
                         return index;
                     default:
-                        return (int)-1;
+                        return (int)ActionIndexHumanoid.Walk;
                 }
             }
             else if (body.IsMonster)
@@ -201,11 +201,11 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                     case MobileAction.MonsterAction:
                         return index;
                     default:
-                        return (int)-1;
+                        return (int)ActionIndexHumanoid.Walk;
                 }
             }
 
-            return -1;
+            return (int)ActionIndexHumanoid.Walk;
         }
 
         public static MobileAction GetActionFromIndex(Body body, int index)

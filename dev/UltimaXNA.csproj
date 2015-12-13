@@ -63,7 +63,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -277,6 +277,9 @@
     <Compile Include="Ultima\Data\Genders.cs" />
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
+    <Compile Include="Ultima\Network\Server\BoatMovingPacket.cs" />
+    <Compile Include="Ultima\Network\Server\PacketContainerPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ObjectInfoPacketNew.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />

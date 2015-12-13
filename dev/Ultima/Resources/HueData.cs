@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.Resources
 {
     public class HueData
     {
-        public const int HueCount = 4096;
+        public const int HueCount = 8192;
 
         private static GraphicsDevice graphicsDevice;
         private static Texture2D m_HueTexture0, m_HueTexture1;

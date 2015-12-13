@@ -28,6 +28,7 @@ namespace UltimaXNA.Ultima.Network.Server
         {
             m_serial = reader.ReadInt32();
             m_gumpId = reader.ReadUInt16();
+            reader.ReadUInt16();
         }
     }
 }

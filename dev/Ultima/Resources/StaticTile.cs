@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.Resources
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct StaticTile : IComparable<StaticTile>
     {
-        public short ID;
+        public ushort ID;
         public byte X;
         public byte Y;
         public sbyte Z;

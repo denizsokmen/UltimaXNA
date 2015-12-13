@@ -61,13 +61,14 @@ namespace UltimaXNA.Ultima.World
             Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(ReceiveDamage));
             Register<StatusInfoPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(ReceiveStatusInfo));
             Register<ObjectInfoPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(ReceiveWorldItem));
+            Register<ObjectInfoPacketNew>(0xF3, "World Item New", 26, new TypedPacketReceiveHandler(ReceiveWorldItemNew));
             Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(ReceiveAsciiMessage));
             Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(ReceiveDeleteObject));
             Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(ReceiveMobileUpdate));
             Register<MovementRejectPacket>(0x21, "Movement Rejection", 8, new TypedPacketReceiveHandler(ReceiveMoveRej));
             Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(ReceiveMoveAck));
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
-            Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
+            Register<OpenContainerPacket>(0x24, "Open Container", 9, new TypedPacketReceiveHandler(ReceiveContainer));
             Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(ReceiveRejectMoveItemRequest));
@@ -123,6 +124,8 @@ namespace UltimaXNA.Ultima.World
             Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
             Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
             Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
+            Register<BoatMovingPacket>(0xF6, "Boat moving packet", -1, new TypedPacketReceiveHandler(ReceiveBoatItems));
+            Register<PacketContainerPacket>(0xF7, "Packet Container Packet", -1, new TypedPacketReceiveHandler(ReceivePacketContainer));
 
             /* Deprecated (not used by RunUO) and/or not implmented
              * Left them here incase we need to implement in the future
@@ -148,6 +151,8 @@ namespace UltimaXNA.Ultima.World
             */
             MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
+
+        
 
         public void Dispose()
         {
@@ -421,6 +426,72 @@ namespace UltimaXNA.Ultima.World
                 Multi multi = WorldModel.Entities.GetObject<Multi>(p.Serial, true);
                 multi.Position.Set(p.X, p.Y, p.Z);
                 multi.MultiID = p.ItemID;
+            }
+        }
+
+        private void ReceiveWorldItemNew(IRecvPacket packet)
+        {
+            ObjectInfoPacketNew p = (ObjectInfoPacketNew)packet;
+
+            // Now create the GameObject.
+            // If the iItemID < 0x4000, this is a regular game object.
+            // If the iItemID >= 0x4000, then this is a multiobject.
+            if (!p.IsMulti)
+            {
+                if (p.Type == 0x01)
+                {
+                    Mobile mobile = WorldModel.Entities.GetObject<Mobile>(p.Serial, true);
+                    if (mobile == null)
+                        return;
+
+                    mobile.Body = p.ItemID;
+                    mobile.Hue = (int) p.Hue;
+                    mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
+                }
+                else
+                {
+                    Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.Amount);
+                    item.Position.Set(p.X, p.Y, p.Z);
+                }
+            }
+            else
+            {
+                int multiID = p.ItemID;
+                Multi multi = WorldModel.Entities.GetObject<Multi>(p.Serial, true);
+                multi.Position.Set(p.X, p.Y, p.Z);
+                multi.MultiID = p.ItemID;
+            }
+        }
+
+        private void ReceivePacketContainer(IRecvPacket packet)
+        {
+            PacketContainerPacket p = (PacketContainerPacket)packet;
+            foreach (ObjectInfoPacketNew info in p.packets)
+            {
+                ReceiveWorldItemNew(info);
+            }
+        }
+
+        private void ReceiveBoatItems(IRecvPacket packet)
+        {
+            BoatMovingPacket p = (BoatMovingPacket)packet;
+            Multi multi = WorldModel.Entities.GetObject<Multi>(p.m_serial, false);
+            multi?.Position.Set(p.m_x, p.m_y, p.m_z);
+            foreach (BoatMovingPacket.BoatItem item in p.items)
+            {
+                AEntity entity = WorldModel.Entities.GetObject<AEntity>(item.m_serial, false);
+                if (entity != null)
+                {
+                    if (entity is Mobile)
+                    {
+                        Mobile mob = (Mobile) entity;
+                        mob.Move_Instant(item.m_x, item.m_y, item.m_z, (int)mob.Facing);
+                    }
+                    else
+                    {
+                        entity.Position.Set(item.m_x, item.m_y, item.m_z);
+                    }
+                }
             }
         }
 
@@ -826,7 +897,8 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[YELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Spell:
-                    m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
+                    overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue, asUnicode);
+                    //m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Guild:
                     m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
@@ -997,7 +1069,7 @@ namespace UltimaXNA.Ultima.World
             CustomHousing.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
 
             Multi multi = WorldModel.Entities.GetObject<Multi>(p.HouseSerial, false);
-            if (multi.CustomHouseRevision != p.RevisionHash)
+            if (multi != null && multi.CustomHouseRevision != p.RevisionHash)
             {
                 CustomHouse house = CustomHousing.GetCustomHouseData(p.HouseSerial);
                 multi.AddCustomHousingTiles(house);

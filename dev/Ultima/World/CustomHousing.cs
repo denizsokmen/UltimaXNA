@@ -102,7 +102,7 @@ namespace UltimaXNA.Ultima.World
                     for (int j = 0; j < numTiles; j++)
                     {
                         StaticTile s = new StaticTile();
-                        s.ID = (short)((m_planes[plane].ItemData[index++] << 8) + m_planes[plane].ItemData[index++]);
+                        s.ID = (ushort)((m_planes[plane].ItemData[index++] << 8) + m_planes[plane].ItemData[index++]);
                         int x = (sbyte)m_planes[plane].ItemData[index++];
                         int y = (sbyte)m_planes[plane].ItemData[index++];
                         int z = (sbyte)m_planes[plane].ItemData[index++];
@@ -160,7 +160,7 @@ namespace UltimaXNA.Ultima.World
                     for (int j = 0; j < numTiles; j++)
                     {
                         StaticTile s = new StaticTile();
-                        s.ID = (short)((m_planes[plane].ItemData[index++] << 8) + m_planes[plane].ItemData[index++]);
+                        s.ID = (ushort)((m_planes[plane].ItemData[index++] << 8) + m_planes[plane].ItemData[index++]);
                         s.X = (byte)(x + iX);
                         s.Y = (byte)(y + iY);
                         s.Z = (sbyte)z;

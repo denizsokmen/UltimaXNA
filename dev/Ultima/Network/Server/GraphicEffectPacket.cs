@@ -8,6 +8,8 @@
  *
  ***************************************************************************/
 #region usings
+
+using System.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
@@ -79,6 +81,10 @@ namespace UltimaXNA.Ultima.Network.Server
             SourceSerial = reader.ReadInt32();
             TargetSerial = reader.ReadInt32();
             ItemID = reader.ReadUInt16();
+            if (ItemID > 30000)
+            {
+                Debug.Print("aa");
+            }
             SourceX = reader.ReadUInt16();
             SourceY = reader.ReadUInt16();
             SourceZ = reader.ReadByte();

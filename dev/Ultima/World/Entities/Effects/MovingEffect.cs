@@ -33,8 +33,8 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
             : base(map)
         {
             Hue = hue;
-            itemID &= 0x3fff;
-            m_ItemID = itemID | 0x4000;
+            itemID &= 0xffff;
+            m_ItemID = itemID;
         }
 
         #region Constructors

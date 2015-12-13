@@ -441,8 +441,8 @@ namespace UltimaXNA.Core.UI.HTML
                         // Can't fit this word on even a full line. Must break it somewhere. 
                         // might as well break it as close to the line end as possible.
                         // TODO: For words VERY near the end of the line, we should not break it, but flow to the next line.
-                        LayoutElements_BreakWordAtLineEnd(root.Children, i, x1 - x0, word, wordWidth, styleWidth);
-                        i--;
+                        //LayoutElements_BreakWordAtLineEnd(root.Children, i, x1 - x0, word, wordWidth, styleWidth);
+                       // i--;
                     }
                     else if (x0 + wordWidth + styleWidth > x1)
                     {

@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.Resources
                 if (reader == null)
                     return MultiComponentList.Empty;
 
-                return new MultiComponentList(reader, length / 12);
+                return new MultiComponentList(reader, length / 16);
             }
             catch
             {
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.Resources
 
         public struct MultiItem
         {
-            public short ItemID;
+            public ushort ItemID;
             public short OffsetX, OffsetY, OffsetZ;
             public int Flags;
 
@@ -107,11 +107,12 @@ namespace UltimaXNA.Ultima.Resources
 
             for (int i = 0; i < count; ++i)
             {
-                Items[i].ItemID = reader.ReadShort();
+                Items[i].ItemID = reader.ReadUShort();
                 Items[i].OffsetX = reader.ReadShort();
                 Items[i].OffsetY = reader.ReadShort();
                 Items[i].OffsetZ = reader.ReadShort();
                 Items[i].Flags = reader.ReadInt();
+                reader.ReadInt();
 
                 if (Items[i].OffsetX < m_Min.X)
                     m_Min.X = Items[i].OffsetX;
